@@ -1,12 +1,11 @@
-import React from 'react'
+import React from 'react';
 
-function App() {
+const App = () => {
   return (
-    <>
-    <input type="text" placeholder="Type here" className="input input-bordered w-full max-w-xs" />
-    <button className='btn btn-primary'>Add Todo</button>
-    </>
-  )
+    <div className="flex items-center justify-center h-screen bg-gray-100">
+      <h1 className="text-4xl font-bold">App</h1>
+    </div>
+  );
 }
 
-export default App
+export default App;

@@ -1,49 +1,62 @@
+import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useRef } from 'react';
-import { auth } from '../config';
-import { useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword } from "firebase/auth"; // Correct import
+import { auth } from "../config/firebase/firebaseconfig";
+import { Link, useNavigate } from "react-router-dom";
 
-function Login() {
-    let navigate = useNavigate();
+const Login = () => {
+    const email = useRef();
+    const password = useRef();
+    const navigate = useNavigate();
 
-    const emailValue = useRef();
-    const passwordValue = useRef();
-
-    const login = (event) => {
+    const loginUser = (event) => {
         event.preventDefault();
-
-        signInWithEmailAndPassword(auth, emailValue.current.value, passwordValue.current.value)
+        console.log(email.current.value);
+        console.log(password.current.value);
+        signInWithEmailAndPassword(auth, email.current.value, password.current.value)
             .then((userCredential) => {
                 const user = userCredential.user;
                 console.log(user);
-                navigate(''); // You might want to specify a path here, e.g., navigate('/dashboard')
+                navigate('/');
             })
             .catch((error) => {
-                console.log(error);
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.error(errorCode, errorMessage); // Errors can be logged for debugging
             });
-    }
+        
+        email.current.value = '';
+        password.current.value = '';
+    };
 
     return (
-        <>
-            <div>
-                <h1 className='text-3xl text-center font-bold mt-3'>Login User</h1>
+        <div className='flex items-center justify-center h-screen bg-gray-100'>
+            <div className='text-center bg-white p-8 rounded shadow-md'>
+                <h1 className='text-3xl font-semibold'>Login</h1>
+                <form onSubmit={loginUser} className='mt-5'>
+                    <input
+                        type="email"
+                        placeholder="Email Address"
+                        className="input w-full p-2 border border-gray-300 rounded mt-3"
+                        ref={email}
+                    />
+                    <br />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        className="input w-full p-2 border border-gray-300 rounded mt-3"
+                        ref={password}
+                    />
+                    <br />
+                    <button className="w-full mt-5 bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+                        Login
+                    </button>
+                </form>
+                <h3 className='mt-3'>
+                    <Link to="/Register" className="text-blue-500 hover:underline">Don't have an account?</Link>
+                </h3>
             </div>
-
-            <form onSubmit={login} className='w-[80%] sm:w-[30%] md:w-[40%] lg:w-[30%] items-center mt-[10vh] m-0 m-auto'>
-                <label className="input input-bordered flex items-center gap-2 mt-5">
-                    {/* SVG Icon */}
-                    <input type="text" className="grow" placeholder="Email" ref={emailValue} />
-                </label>
-                <label className="input input-bordered flex items-center gap-2 mt-5">
-                    {/* SVG Icon */}
-                    <input type="password" className="grow" placeholder='Password' ref={passwordValue} />
-                </label>
-                <div className='text-center mt-5'>
-                    <button type="submit" className="btn btn-outline btn-info">LOGIN</button>
-                </div>
-            </form>
-        </>
+        </div>
     );
-}
+};
 
 export default Login;

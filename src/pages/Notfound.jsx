@@ -1,11 +1,11 @@
-import React from 'react'
+import React from 'react';
 
-function Notfound() {
+const Notfound = () => {
   return (
-    <>
-    <h2 className='text-center text-7xl font-bold'>Page not Found!</h2>
-    </>
-  )
+    <div className="flex items-center justify-center h-screen bg-gray-100">
+      <h1 className="text-4xl font-bold text-red-500">Not Found</h1>
+    </div>
+  );
 }
 
-export default Notfound
+export default Notfound;

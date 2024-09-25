@@ -1,44 +1,27 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-
-function Navbar() {
+const Navber = () => {
   return (
-    <div className="navbar bg-[#15aaea] ">
-  <div className="flex-1">
-    <a className="btn btn-ghost text-xl">Todo App</a>
-  </div>
-  <div className="flex-none">
-    <div className="dropdown dropdown-end">
-      <div
-        tabIndex={0}
-        className="card card-compact dropdown-content bg-base-100 z-[1] mt-3 w-52 shadow">
-      </div>
-    </div>
-    <div className="dropdown dropdown-end">
-      <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-        <div className="w-10 rounded-full">
-          <img
-            alt="Tailwind CSS Navbar component"
-            src="https://media.istockphoto.com/id/1130884625/vector/user-member-vector-icon-for-ui-user-interface-or-profile-face-avatar-app-in-circle-design.jpg?s=612x612&w=0&k=20&c=1ky-gNHiS2iyLsUPQkxAtPBWH1BZt0PKBB1WBtxQJRE=" />
+    <nav className="bg-blue-600 p-4">
+      <div className="container mx-auto flex justify-between items-center">
+        <h1 className="text-white text-2xl font-bold">
+          <Link to="/">MyApp</Link>
+        </h1>
+        <div className="flex space-x-4">
+          <Link to="/" className="text-white hover:bg-blue-500 rounded px-3 py-2 transition duration-300">
+            Home
+          </Link>
+          <Link to="login" className="text-white hover:bg-blue-500 rounded px-3 py-2 transition duration-300">
+            Login
+          </Link>
+          <Link to="register" className="text-white hover:bg-blue-500 rounded px-3 py-2 transition duration-300">
+            Register
+          </Link>
         </div>
       </div>
-      <ul
-        tabIndex={0}
-        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-        <li>
-          <a className="justify-between">
-            Profile
-            <span className="badge">New</span>
-          </a>
-        </li>
-        <li><Link to={''}>My Todo</Link></li>
-        <li><a>Logout</a></li>
-      </ul>
-    </div>
-  </div>
-</div>
-  )
+    </nav>
+  );
 }
 
-export default Navbar
+export default Navber;

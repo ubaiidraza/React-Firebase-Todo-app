@@ -1,186 +1,63 @@
-// import React, { useEffect, useRef, useState } from 'react'
-// import { collection, addDoc , getDocs , deleteDoc , doc , updateDoc } from "firestore"; 
-// import { db } from '../config';
-   
+import React, { useRef, useState } from 'react';
 
+const Home = () => {
+  const todo = useRef();
+  const [todoRender, setTodos] = useState([]);
 
-
-// function Home() {
-
-//   const todoVal = useRef()
-
-  
-//     let [todo , setTodo] = useState([]);
-
-//    const addTodo = async (event) => {
-//     event.preventDefault()
-//      const addData = async () => {
-//       const docRef = await addDoc(collection(db, "userTodo"), {
-//  todo:todoVal.current.value,
-// });
-// console.log("Document written with ID: ", docRef.id);
-// setTodo(prevTodo => [...prevTodo , {id:docRef.id , todo:todoVal.current.value}])
-// console.log(todo);
-//     }
-
-    
-    
-//     addData();
-//    }
-
-
-//    const deleteBtn = async(index) => {
-
-//     try {
-//             await deleteDoc(doc(db, "userTodo", index));
-//             console.log('Todo deleted with ID: ', index);
-//             setTodo(prevTodos => prevTodos.filter(todo => todo.id !== index))
-            
-//         } catch (error) {
-//             console.log(error);
-            
-//         }
-
-//     console.log('delete button clicked');
-    
-
-//    }
-
-
-//    const editBtn = async (id)=>{
-
-//         const updateValue = prompt('Update your Todo');
-//         if (updateValue === null || updateValue.trim() === '') {
-//             return;
-//         }
-
-//         await updateDoc(doc(db, 'userTodo', id),{todo: updateValue})
-//         setTodo(prevTodos => prevTodos.map(todo =>
-//             todo.id === id ? { ...todo, todo: updateValue } : todo
-//         ));
-
-//     }
-
-  
-
-
-
-  
-
-  
-
-
-//   return (
-//     <>
-//     <form onSubmit={addTodo} className='flex justify-center items-center gap-3 '>
-//       <div className='text-center mt-4'>
-//       <input
-//   type="text"
-//   placeholder="Todo..."
-//   className="input input-bordered input-primary w-full max-w-5xl" ref={todoVal} />
-
- 
-
-//     </div>
-//     <div className='mt-4'>
-//        <button className='btn btn-primary'>Add Todo</button>
-//     </div>
-//     </form>
-
-//     {todo.length!=0 ? todo.map((item)=>{
-//       return(
-//        <>
-//        <h1 className='text-2xl text-center m-[10vh] font-bold'>User Todo</h1>
-//        <div key={item.id}>
-//         <li className='list-none mt-3 flex justify-center gap-5 text-xl'>{item.todo} <button className='btn btn-warning' onClick={() => deleteBtn(item.id)}>delete</button>  <button className='btn btn-warning' onClick={()=> editBtn(item.id)}>edit</button></li>
-//        </div>
-//        </>
-//       )
-
-//     }): <h1 className='text-center mt-5'>No Todo found...</h1>}
-
- 
-    
-//     </>
-//   )
-// }
-
-// export default Home
-
-
-import React, { useEffect, useRef, useState } from "react";
-import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore"; // درست راستہ
-import { db } from "../config";
-
-function Home() {
-  const [tasks, setTasks] = useState([]);
-  const taskInputRef = useRef();
-
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const tasksCollection = collection(db, "tasks");
-        const taskSnapshot = await getDocs(tasksCollection);
-        const taskList = taskSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setTasks(taskList);
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      }
-    };
-
-    fetchTasks();
-  }, []);
-
-  const addTask = async (e) => {
-    e.preventDefault();
-    const task = taskInputRef.current.value.trim();
-    if (task === "") return;
-
-    try {
-      const docRef = await addDoc(collection(db, "tasks"), { task });
-      setTasks([...tasks, { id: docRef.id, task }]);
-      taskInputRef.current.value = "";
-    } catch (error) {
-      console.error("Error adding task:", error);
+  const addTodo = (event) => {
+    event.preventDefault();
+    if (todo.current.value.trim() !== "") {
+      setTodos([...todoRender, todo.current.value]);
+      todo.current.value = '';
     }
   };
 
-  const deleteTask = async (id) => {
-    try {
-      await deleteDoc(doc(db, "tasks", id));
-      setTasks(tasks.filter(task => task.id !== id));
-    } catch (error) {
-      console.error("Error deleting task:", error);
-    }
+  const deleteTodo = (index) => {
+    console.log("delete", index);
+    const updatedTodos = todoRender.filter((_, i) => i !== index);
+    setTodos(updatedTodos);
   };
 
-  const updateTask = async (id, newTask) => {
-    try {
-      await updateDoc(doc(db, "tasks", id), { task: newTask });
-      setTasks(tasks.map(task => task.id === id ? { ...task, task: newTask } : task));
-    } catch (error) {
-      console.error("Error updating task:", error);
+  const editTodo = (index) => {
+    console.log("edit", index);
+    const editVal = prompt("Enter Todo", todoRender[index]);
+    if (editVal && editVal.trim() !== "") {
+      const updatedTodos = [...todoRender];
+      updatedTodos[index] = editVal;
+      setTodos(updatedTodos);
     }
   };
 
   return (
-    <div>
-      <h1 className="text-3xl text-center font-bold mt-3">Todo List</h1>
-      <form onSubmit={addTask} className="flex justify-center mt-5">
-        <input type="text" ref={taskInputRef} placeholder="New Task" className="input input-bordered" />
-        <button type="submit" className="btn btn-primary ml-2">Add Task</button>
-      </form>
-      <ul className="mt-5">
-        {tasks.map(task => (
-          <li key={task.id} className="flex justify-between items-center">
-            <span>{task.task}</span>
-            <div>
-              <button onClick={() => deleteTask(task.id)} className="btn btn-error btn-sm">Delete</button>
-            </div>
-          </li>
+    <>
+      <div className='text-center'>
+        <h1 className='text-4xl mt-5'>Todo App</h1>
+        <form onSubmit={addTodo} className='mt-5'>
+          <input
+            type="text"
+            placeholder="Enter Todo"
+            className="border border-gray-300 rounded p-2 w-80"
+            ref={todo}
+          />
+          <button className="bg-blue-500 text-white p-2 rounded ml-2 hover:bg-blue-600">
+            Add Todo
+          </button>
+        </form>
+      </div>
+      <ul className='mt-5'>
+        {todoRender.map((item, index) => (
+          <div key={index} className='flex justify-center gap-5 mt-3'>
+            <li className='border-b-2 pb-1'>{item}</li>
+            <button onClick={() => editTodo(index)} className="bg-green-500 text-white p-1 rounded hover:bg-green-600">
+              Edit
+            </button>
+            <button onClick={() => deleteTodo(index)} className="bg-red-500 text-white p-1 rounded hover:bg-red-600">
+              Delete
+            </button>
+          </div>
         ))}
       </ul>
-    </div>
+    </>
   );
 }
 
